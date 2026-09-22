@@ -1,0 +1,558 @@
+/* ==================== RESET & BASE ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Arial', sans-serif;
+  color: #e0e0e0;
+  background: #0a0a1a;
+}
+
+/* Космический фон со звёздами */
+body {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(40, 20, 80, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(20, 40, 80, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(60, 20, 60, 0.2) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a1a 0%, #0d0d2b 50%, #0a0a1a 100%);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Звёзды на фоне */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 20% 60%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 30% 10%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 40% 80%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 50% 40%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 60% 70%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 70% 30%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 80% 90%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 90% 50%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 15% 85%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 25% 45%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 35% 55%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 45% 15%, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(1px 1px at 55% 95%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 65% 25%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 75% 75%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 85% 35%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 95% 65%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1px 1px at 5% 50%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 50% 5%, rgba(255, 255, 255, 0.5), transparent);
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* ==================== GAME WRAPPER ==================== */
+.game-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 16px;
+}
+
+.game-container {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ==================== HEADER ==================== */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-title h1 {
+  font-size: clamp(1.8rem, 7vw, 2.8rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(100, 100, 255, 0.3);
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: #8888bb;
+  margin-top: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.game-scores {
+  display: flex;
+  gap: 8px;
+}
+
+.score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a3e, #2a2a5e);
+  border: 1px solid rgba(100, 100, 200, 0.3);
+  border-radius: 10px;
+  padding: 8px 16px;
+  min-width: 70px;
+}
+
+.score-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #8888bb;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  text-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
+}
+
+/* ==================== CONTROLS ==================== */
+.game-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.new-game-btn {
+  background: linear-gradient(135deg, #4a2c8a, #6b3fa0);
+  color: #fff;
+  border: 1px solid rgba(150, 100, 255, 0.3);
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(100, 50, 200, 0.3);
+}
+
+.new-game-btn:hover {
+  background: linear-gradient(135deg, #5a3c9a, #7b4fb0);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(100, 50, 200, 0.4);
+}
+
+.new-game-btn:active {
+  transform: scale(0.96);
+}
+
+.game-instructions {
+  font-size: 0.82rem;
+  color: #aaa;
+  line-height: 1.4;
+  flex: 1;
+  min-width: 180px;
+}
+
+.game-instructions strong {
+  color: #ddd;
+}
+
+/* ==================== EVOLUTION BAR ==================== */
+.evolution-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(20, 20, 50, 0.8), rgba(30, 30, 60, 0.8));
+  border: 1px solid rgba(100, 100, 200, 0.2);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+.evo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0.4;
+  transition: all 0.3s;
+}
+
+.evo-item.evo-active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 8px rgba(150, 150, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.evo-image {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ==================== GAME BOARD ==================== */
+.game-board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #1a1a3e, #15152e);
+  border-radius: 14px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  --gap: 10px;
+  --padding: 10px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(50, 50, 150, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(100, 100, 200, 0.2);
+}
+
+/* Фоновая сетка */
+.grid-background {
+  position: absolute;
+  inset: var(--padding);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.grid-cell {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* ==================== TILES ==================== */
+.tiles-container {
+  position: absolute;
+  inset: var(--padding);
+}
+
+.tile {
+  position: absolute;
+  width: calc((100% - 3 * var(--gap)) / 4);
+  height: calc((100% - 3 * var(--gap)) / 4);
+  left: calc(var(--col) * (100% + var(--gap)) / 4);
+  top: calc(var(--row) * (100% + var(--gap)) / 4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  transition: top 0.12s ease-in-out, left 0.12s ease-in-out;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.tile-image {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.tile-name {
+  font-size: clamp(0.45rem, 1.5vw, 0.65rem);
+  font-weight: 600;
+  margin-top: 2px;
+  opacity: 0.9;
+  text-align: center;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+
+/* ==================== TILE ANIMATIONS ==================== */
+.tile-new {
+  animation: tile-appear 0.25s ease-out;
+}
+
+@keyframes tile-appear {
+  0% {
+    transform: scale(0) rotate(-10deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.tile-merged {
+  animation: tile-merge 0.3s ease-in-out;
+  z-index: 2;
+}
+
+@keyframes tile-merge {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ==================== OVERLAYS ==================== */
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  border-radius: 14px;
+  animation: overlay-fade-in 0.6s ease-in-out;
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.overlay-win {
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.4) 0%, rgba(255, 165, 0, 0.3) 50%, rgba(0, 0, 0, 0.7) 100%);
+  backdrop-filter: blur(4px);
+}
+
+.overlay-lose {
+  background: radial-gradient(circle, rgba(30, 30, 60, 0.8) 0%, rgba(0, 0, 0, 0.85) 100%);
+  backdrop-filter: blur(4px);
+}
+
+.overlay-content {
+  text-align: center;
+  padding: 24px;
+}
+
+.overlay-content h2 {
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.overlay-lose .overlay-content h2 {
+  text-shadow: 0 0 20px rgba(100, 100, 200, 0.5);
+}
+
+.overlay-content p {
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.overlay-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.overlay-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 22px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.overlay-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.overlay-btn:active {
+  transform: scale(0.95);
+}
+
+.btn-continue {
+  background: linear-gradient(135deg, #4a2c8a, #6b3fa0);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(100, 50, 200, 0.4);
+}
+
+.btn-new {
+  background: linear-gradient(135deg, #c1440e, #e85d04);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(200, 70, 10, 0.4);
+}
+
+/* ==================== FOOTER ==================== */
+.game-footer {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.game-footer p {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 520px) {
+  .game-wrapper {
+    padding: 10px;
+    align-items: flex-start;
+    padding-top: 16px;
+  }
+
+  .game-container {
+    gap: 10px;
+  }
+
+  .game-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .game-title {
+    text-align: center;
+  }
+
+  .game-title h1 {
+    font-size: 2rem;
+  }
+
+  .game-scores {
+    justify-content: center;
+  }
+
+  .score-box {
+    padding: 6px 14px;
+    min-width: 60px;
+  }
+
+  .score-value {
+    font-size: 1.1rem;
+  }
+
+  .game-controls {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .game-instructions {
+    font-size: 0.78rem;
+    min-width: unset;
+  }
+
+  .game-board {
+    --gap: 7px;
+    --padding: 7px;
+    border-radius: 12px;
+  }
+
+  .grid-cell {
+    border-radius: 7px;
+  }
+
+  .tile {
+    border-radius: 7px;
+  }
+
+  .tile-image {
+    width: 65%;
+    height: 65%;
+  }
+
+  .tile-name {
+    font-size: clamp(0.4rem, 1.3vw, 0.55rem);
+  }
+
+  .evo-item {
+    width: 26px;
+    height: 26px;
+  }
+
+  .evo-image {
+    width: 75%;
+    height: 75%;
+  }
+}
+
+@media (max-width: 360px) {
+  .game-wrapper {
+    padding: 6px;
+  }
+
+  .game-board {
+    --gap: 5px;
+    --padding: 5px;
+  }
+
+  .tile-image {
+    width: 80%;
+    height: 80%;
+  }
+
+  .tile-name {
+    display: none;
+  }
+
+  .evo-item {
+    width: 22px;
+    height: 22px;
+  }
+
+  .evo-image {
+    width: 85%;
+    height: 85%;
+  }
+}
