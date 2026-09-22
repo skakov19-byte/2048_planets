@@ -6,26 +6,26 @@ import './index.css';
 interface CosmicObject {
   value: number;
   name: string;
-  emoji: string;
+  image: string;
   color: string;
   textColor: string;
   glow?: string;
 }
 
 const COSMIC_OBJECTS: CosmicObject[] = [
-  { value: 2,    name: 'Астероид',      emoji: '☄️',  color: '#8b7355', textColor: '#f5f0e8' },
-  { value: 4,    name: 'Метеорит',      emoji: '🪨',  color: '#6b5b4f', textColor: '#f5f0e8' },
-  { value: 8,    name: 'Луна',          emoji: '🌙',  color: '#c4b896', textColor: '#4a4535' },
-  { value: 16,   name: 'Марс',          emoji: '🔴',  color: '#c1440e', textColor: '#fff5ee' },
-  { value: 32,   name: 'Венера',        emoji: '🟡',  color: '#e8a735', textColor: '#4a3520' },
-  { value: 64,   name: 'Земля',         emoji: '🌍',  color: '#2e8b57', textColor: '#f0fff0', glow: 'rgba(46, 139, 87, 0.4)' },
-  { value: 128,  name: 'Нептун',        emoji: '🔵',  color: '#4169e1', textColor: '#f0f8ff', glow: 'rgba(65, 105, 225, 0.4)' },
-  { value: 256,  name: 'Уран',          emoji: '🫧',  color: '#5f9ea0', textColor: '#f0ffff', glow: 'rgba(95, 158, 160, 0.4)' },
-  { value: 512,  name: 'Сатурн',        emoji: '🪐',  color: '#daa520', textColor: '#fff8dc', glow: 'rgba(218, 165, 32, 0.5)' },
-  { value: 1024, name: 'Юпитер',        emoji: '🟠',  color: '#cd853f', textColor: '#fff5ee', glow: 'rgba(205, 133, 63, 0.5)' },
-  { value: 2048, name: 'Солнце',        emoji: '☀️',  color: '#ffd700', textColor: '#4a3500', glow: 'rgba(255, 215, 0, 0.7)' },
-  { value: 4096, name: 'Красный гигант', emoji: '🌟', color: '#ff4500', textColor: '#fff5ee', glow: 'rgba(255, 69, 0, 0.7)' },
-  { value: 8192, name: 'Сверхгигант',   emoji: '💫',  color: '#9400d3', textColor: '#fff0ff', glow: 'rgba(148, 0, 211, 0.8)' },
+  { value: 2,    name: 'Астероид',      image: '/assets/asteroid.png',    color: '#8b7355', textColor: '#f5f0e8' },
+  { value: 4,    name: 'Метеорит',      image: '/assets/meteorite.png',   color: '#6b5b4f', textColor: '#f5f0e8' },
+  { value: 8,    name: 'Луна',          image: '/assets/moon.png',        color: '#c4b896', textColor: '#4a4535' },
+  { value: 16,   name: 'Марс',          image: '/assets/mars.png',        color: '#c1440e', textColor: '#fff5ee' },
+  { value: 32,   name: 'Венера',        image: '/assets/venus.png',       color: '#e8a735', textColor: '#4a3520' },
+  { value: 64,   name: 'Земля',         image: '/assets/earth.png',       color: '#2e8b57', textColor: '#f0fff0', glow: 'rgba(46, 139, 87, 0.4)' },
+  { value: 128,  name: 'Нептун',        image: '/assets/neptune.png',     color: '#4169e1', textColor: '#f0f8ff', glow: 'rgba(65, 105, 225, 0.4)' },
+  { value: 256,  name: 'Уран',          image: '/assets/uranus.png',      color: '#5f9ea0', textColor: '#f0ffff', glow: 'rgba(95, 158, 160, 0.4)' },
+  { value: 512,  name: 'Сатурн',        image: '/assets/saturn.png',      color: '#daa520', textColor: '#fff8dc', glow: 'rgba(218, 165, 32, 0.5)' },
+  { value: 1024, name: 'Юпитер',        image: '/assets/jupiter.png',     color: '#cd853f', textColor: '#fff5ee', glow: 'rgba(205, 133, 63, 0.5)' },
+  { value: 2048, name: 'Солнце',        image: '/assets/sun.png',         color: '#ffd700', textColor: '#4a3500', glow: 'rgba(255, 215, 0, 0.7)' },
+  { value: 4096, name: 'Красный гигант', image: '/assets/red-giant.png',  color: '#ff4500', textColor: '#fff5ee', glow: 'rgba(255, 69, 0, 0.7)' },
+  { value: 8192, name: 'Сверхгигант',   image: '/assets/supergiant.png',  color: '#9400d3', textColor: '#fff0ff', glow: 'rgba(148, 0, 211, 0.8)' },
 ];
 
 // Получаем объект по значению
@@ -445,7 +445,7 @@ export default function App() {
         {/* Заголовок */}
         <div className="game-header">
           <div className="game-title">
-            <h1>🌌 2048</h1>
+            <h1>2048</h1>
             <p className="subtitle">Космическая эволюция</p>
           </div>
           <div className="game-scores">
@@ -463,10 +463,10 @@ export default function App() {
         {/* Кнопка и описание */}
         <div className="game-controls">
           <button className="new-game-btn" onClick={handleNewGame}>
-            🚀 Новая игра
+            Новая игра
           </button>
           <p className="game-instructions">
-            Соединяй космические объекты: <strong>☄️ → 🌙 → 🌍 → 🪐 → ☀️</strong>
+            Соединяй космические объекты: <strong>Астероид → Луна → Земля → Сатурн → Солнце</strong>
           </p>
         </div>
 
@@ -480,7 +480,7 @@ export default function App() {
                 className={`evo-item ${isHighestOnBoard ? 'evo-active' : ''}`}
                 title={obj.name}
               >
-                <span className="evo-emoji">{obj.emoji}</span>
+                <img className="evo-image" src={obj.image} alt={obj.name} />
               </div>
             );
           })}
@@ -511,9 +511,9 @@ export default function App() {
                   key={tile.id}
                   className={`tile ${tile.isNew ? 'tile-new' : ''} ${tile.mergedFrom ? 'tile-merged' : ''}`}
                   style={{ ...getTilePosition(tile.row, tile.col), ...getTileStyle(tile.value) }}
-                  title={`${cosmicObj.name}${nextObj ? ` → ${nextObj.emoji} ${nextObj.name}` : ''}`}
+                  title={`${cosmicObj.name}${nextObj ? ` → ${nextObj.name}` : ''}`}
                 >
-                  <span className="tile-emoji">{cosmicObj.emoji}</span>
+                  <img className="tile-image" src={cosmicObj.image} alt={cosmicObj.name} />
                   <span className="tile-name">{cosmicObj.name}</span>
                 </div>
               );
@@ -524,14 +524,14 @@ export default function App() {
           {gameState.won && !gameState.keepPlaying && (
             <div className="game-overlay overlay-win">
               <div className="overlay-content">
-                <h2>☀️ Вы создали Солнце!</h2>
+                <h2>🌟 Вы создали Солнце!</h2>
                 <p>Невероятно! Вы достигли вершины эволюции!</p>
                 <div className="overlay-buttons">
                   <button className="overlay-btn btn-continue" onClick={handleKeepPlaying}>
                     Продолжить эволюцию
                   </button>
                   <button className="overlay-btn btn-new" onClick={handleNewGame}>
-                    🚀 Новая игра
+                    Новая игра
                   </button>
                 </div>
               </div>
@@ -542,11 +542,11 @@ export default function App() {
           {gameState.gameOver && (
             <div className="game-overlay overlay-lose">
               <div className="overlay-content">
-                <h2>🌑 Конец вселенной</h2>
+                <h2>Конец вселенной</h2>
                 <p>Больше нет возможных ходов. Счёт: {gameState.score}</p>
                 <div className="overlay-buttons">
                   <button className="overlay-btn btn-new" onClick={handleNewGame}>
-                    🚀 Новая вселенная
+                    Новая вселенная
                   </button>
                 </div>
               </div>
@@ -556,7 +556,7 @@ export default function App() {
 
         {/* Футер */}
         <div className="game-footer">
-          <p>🌌 Космическая 2048 | Стрелки / WASD / Свайпы</p>
+          <p>Космическая 2048 | Стрелки / WASD / Свайпы</p>
         </div>
       </div>
     </div>

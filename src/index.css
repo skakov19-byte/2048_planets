@@ -217,9 +217,12 @@ body::before {
   transform: scale(1.1);
 }
 
-.evo-emoji {
-  font-size: 1.1rem;
-  line-height: 1;
+.evo-image {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
 }
 
 /* ==================== GAME BOARD ==================== */
@@ -280,11 +283,13 @@ body::before {
   overflow: hidden;
 }
 
-.tile-emoji {
-  font-size: clamp(1.4rem, 5vw, 2.2rem);
-  line-height: 1;
+.tile-image {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
   user-select: none;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .tile-name {
@@ -502,8 +507,9 @@ body::before {
     border-radius: 7px;
   }
 
-  .tile-emoji {
-    font-size: clamp(1.2rem, 4.5vw, 1.8rem);
+  .tile-image {
+    width: 65%;
+    height: 65%;
   }
 
   .tile-name {
@@ -515,8 +521,9 @@ body::before {
     height: 26px;
   }
 
-  .evo-emoji {
-    font-size: 0.9rem;
+  .evo-image {
+    width: 75%;
+    height: 75%;
   }
 }
 
@@ -530,8 +537,9 @@ body::before {
     --padding: 5px;
   }
 
-  .tile-emoji {
-    font-size: clamp(1rem, 4vw, 1.5rem);
+  .tile-image {
+    width: 80%;
+    height: 80%;
   }
 
   .tile-name {
@@ -543,7 +551,8 @@ body::before {
     height: 22px;
   }
 
-  .evo-emoji {
-    font-size: 0.75rem;
+  .evo-image {
+    width: 85%;
+    height: 85%;
   }
 }
