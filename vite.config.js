@@ -4,6 +4,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // Относительные пути для корректной работы на GitHub Pages
+  base: './',
   server: {
     host: "0.0.0.0",
     port: 3000,

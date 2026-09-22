@@ -13,19 +13,19 @@ interface CosmicObject {
 }
 
 const COSMIC_OBJECTS: CosmicObject[] = [
-  { value: 2,    name: 'Астероид',      image: '/assets/asteroid.png',    color: '#8b7355', textColor: '#f5f0e8' },
-  { value: 4,    name: 'Метеорит',      image: '/assets/meteorite.png',   color: '#6b5b4f', textColor: '#f5f0e8' },
-  { value: 8,    name: 'Луна',          image: '/assets/moon.png',        color: '#c4b896', textColor: '#4a4535' },
-  { value: 16,   name: 'Марс',          image: '/assets/mars.png',        color: '#c1440e', textColor: '#fff5ee' },
-  { value: 32,   name: 'Венера',        image: '/assets/venus.png',       color: '#e8a735', textColor: '#4a3520' },
-  { value: 64,   name: 'Земля',         image: '/assets/earth.png',       color: '#2e8b57', textColor: '#f0fff0', glow: 'rgba(46, 139, 87, 0.4)' },
-  { value: 128,  name: 'Нептун',        image: '/assets/neptune.png',     color: '#4169e1', textColor: '#f0f8ff', glow: 'rgba(65, 105, 225, 0.4)' },
-  { value: 256,  name: 'Уран',          image: '/assets/uranus.png',      color: '#5f9ea0', textColor: '#f0ffff', glow: 'rgba(95, 158, 160, 0.4)' },
-  { value: 512,  name: 'Сатурн',        image: '/assets/saturn.png',      color: '#daa520', textColor: '#fff8dc', glow: 'rgba(218, 165, 32, 0.5)' },
-  { value: 1024, name: 'Юпитер',        image: '/assets/jupiter.png',     color: '#cd853f', textColor: '#fff5ee', glow: 'rgba(205, 133, 63, 0.5)' },
-  { value: 2048, name: 'Солнце',        image: '/assets/sun.png',         color: '#ffd700', textColor: '#4a3500', glow: 'rgba(255, 215, 0, 0.7)' },
-  { value: 4096, name: 'Красный гигант', image: '/assets/red-giant.png',  color: '#ff4500', textColor: '#fff5ee', glow: 'rgba(255, 69, 0, 0.7)' },
-  { value: 8192, name: 'Сверхгигант',   image: '/assets/supergiant.png',  color: '#9400d3', textColor: '#fff0ff', glow: 'rgba(148, 0, 211, 0.8)' },
+  { value: 2,    name: 'Астероид',      image: './assets/asteroid.png',    color: '#8b7355', textColor: '#f5f0e8' },
+  { value: 4,    name: 'Метеорит',      image: './assets/meteorite.png',   color: '#6b5b4f', textColor: '#f5f0e8' },
+  { value: 8,    name: 'Луна',          image: './assets/moon.png',        color: '#c4b896', textColor: '#4a4535' },
+  { value: 16,   name: 'Марс',          image: './assets/mars.png',        color: '#c1440e', textColor: '#fff5ee' },
+  { value: 32,   name: 'Венера',        image: './assets/venus.png',       color: '#e8a735', textColor: '#4a3520' },
+  { value: 64,   name: 'Земля',         image: './assets/earth.png',       color: '#2e8b57', textColor: '#f0fff0', glow: 'rgba(46, 139, 87, 0.4)' },
+  { value: 128,  name: 'Нептун',        image: './assets/neptune.png',     color: '#4169e1', textColor: '#f0f8ff', glow: 'rgba(65, 105, 225, 0.4)' },
+  { value: 256,  name: 'Уран',          image: './assets/uranus.png',      color: '#5f9ea0', textColor: '#f0ffff', glow: 'rgba(95, 158, 160, 0.4)' },
+  { value: 512,  name: 'Сатурн',        image: './assets/saturn.png',      color: '#daa520', textColor: '#fff8dc', glow: 'rgba(218, 165, 32, 0.5)' },
+  { value: 1024, name: 'Юпитер',        image: './assets/jupiter.png',     color: '#cd853f', textColor: '#fff5ee', glow: 'rgba(205, 133, 63, 0.5)' },
+  { value: 2048, name: 'Солнце',        image: './assets/sun.png',         color: '#ffd700', textColor: '#4a3500', glow: 'rgba(255, 215, 0, 0.7)' },
+  { value: 4096, name: 'Красный гигант', image: './assets/red-giant.png',  color: '#ff4500', textColor: '#fff5ee', glow: 'rgba(255, 69, 0, 0.7)' },
+  { value: 8192, name: 'Сверхгигант',   image: './assets/supergiant.png',  color: '#9400d3', textColor: '#fff0ff', glow: 'rgba(148, 0, 211, 0.8)' },
 ];
 
 // Получаем объект по значению
