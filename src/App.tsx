@@ -1,14 +1,46 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import './index.css';
 
+// ==================== КОСМИЧЕСКИЕ ОБЪЕКТЫ ====================
+// Последовательность эволюции: от астероида до сверхгиганта
+interface CosmicObject {
+  value: number;
+  name: string;
+  emoji: string;
+  color: string;
+  textColor: string;
+  glow?: string;
+}
+
+const COSMIC_OBJECTS: CosmicObject[] = [
+  { value: 2,    name: 'Астероид',      emoji: '☄️',  color: '#8b7355', textColor: '#f5f0e8' },
+  { value: 4,    name: 'Метеорит',      emoji: '🪨',  color: '#6b5b4f', textColor: '#f5f0e8' },
+  { value: 8,    name: 'Луна',          emoji: '🌙',  color: '#c4b896', textColor: '#4a4535' },
+  { value: 16,   name: 'Марс',          emoji: '🔴',  color: '#c1440e', textColor: '#fff5ee' },
+  { value: 32,   name: 'Венера',        emoji: '🟡',  color: '#e8a735', textColor: '#4a3520' },
+  { value: 64,   name: 'Земля',         emoji: '🌍',  color: '#2e8b57', textColor: '#f0fff0', glow: 'rgba(46, 139, 87, 0.4)' },
+  { value: 128,  name: 'Нептун',        emoji: '🔵',  color: '#4169e1', textColor: '#f0f8ff', glow: 'rgba(65, 105, 225, 0.4)' },
+  { value: 256,  name: 'Уран',          emoji: '🫧',  color: '#5f9ea0', textColor: '#f0ffff', glow: 'rgba(95, 158, 160, 0.4)' },
+  { value: 512,  name: 'Сатурн',        emoji: '🪐',  color: '#daa520', textColor: '#fff8dc', glow: 'rgba(218, 165, 32, 0.5)' },
+  { value: 1024, name: 'Юпитер',        emoji: '🟠',  color: '#cd853f', textColor: '#fff5ee', glow: 'rgba(205, 133, 63, 0.5)' },
+  { value: 2048, name: 'Солнце',        emoji: '☀️',  color: '#ffd700', textColor: '#4a3500', glow: 'rgba(255, 215, 0, 0.7)' },
+  { value: 4096, name: 'Красный гигант', emoji: '🌟', color: '#ff4500', textColor: '#fff5ee', glow: 'rgba(255, 69, 0, 0.7)' },
+  { value: 8192, name: 'Сверхгигант',   emoji: '💫',  color: '#9400d3', textColor: '#fff0ff', glow: 'rgba(148, 0, 211, 0.8)' },
+];
+
+// Получаем объект по значению
+function getCosmicObject(value: number): CosmicObject {
+  return COSMIC_OBJECTS.find(obj => obj.value === value) || COSMIC_OBJECTS[COSMIC_OBJECTS.length - 1];
+}
+
 // ==================== ТИПЫ ====================
 interface Tile {
   id: number;
   value: number;
   row: number;
   col: number;
-  mergedFrom?: boolean; // Флаг: плитка была создана слиянием
-  isNew?: boolean; // Флаг: новая плитка
+  mergedFrom?: boolean;
+  isNew?: boolean;
 }
 
 interface GameState {
@@ -22,7 +54,7 @@ interface GameState {
 
 // ==================== КОНСТАНТЫ ====================
 const GRID_SIZE = 4;
-const WINNING_VALUE = 2048;
+const WINNING_VALUE = 2048; // Солнце — цель
 
 // ==================== УТИЛИТЫ ====================
 let tileIdCounter = 0;
@@ -38,7 +70,6 @@ function cloneGrid(grid: (Tile | null)[][]): (Tile | null)[][] {
   return grid.map(row => row.map(cell => cell ? { ...cell } : null));
 }
 
-// Получаем свободные клетки
 function getAvailableCells(grid: (Tile | null)[][]): { row: number; col: number }[] {
   const cells: { row: number; col: number }[] = [];
   for (let r = 0; r < GRID_SIZE; r++) {
@@ -68,7 +99,6 @@ function spawnTile(grid: (Tile | null)[][]): Tile | null {
 }
 
 // ==================== ЛОГИКА ДВИЖЕНИЯ ====================
-// Направления: 0=up, 1=right, 2=down, 3=left
 type Direction = 0 | 1 | 2 | 3;
 
 interface MoveResult {
@@ -82,8 +112,6 @@ function move(grid: (Tile | null)[][], direction: Direction): MoveResult {
   let moved = false;
   let scoreGained = 0;
 
-  // Определяем порядок обхода и вектор движения
-  // Вектор: куда двигаются плитки
   const vectors: Record<Direction, { dr: number; dc: number }> = {
     0: { dr: -1, dc: 0 }, // up
     1: { dr: 0, dc: 1 },  // right
@@ -92,13 +120,10 @@ function move(grid: (Tile | null)[][], direction: Direction): MoveResult {
   };
 
   const vector = vectors[direction];
-
-  // Определяем порядок обхода строк/столбцов
-  // Для up/left — обходим с начала, для down/right — с конца
   const rowOrder = direction === 2 ? [3, 2, 1, 0] : [0, 1, 2, 3];
   const colOrder = direction === 1 ? [3, 2, 1, 0] : [0, 1, 2, 3];
 
-  // Отслеживаем, какие плитки уже слились в этом ходу
+  // Отслеживаем, какие позиции уже слились в этом ходу
   const mergedPositions = new Set<string>();
 
   for (const r of rowOrder) {
@@ -106,7 +131,6 @@ function move(grid: (Tile | null)[][], direction: Direction): MoveResult {
       const tile = newGrid[r][c];
       if (!tile) continue;
 
-      // Находим самую дальнюю позицию, куда может двигаться плитка
       let newRow = r;
       let newCol = c;
 
@@ -114,13 +138,11 @@ function move(grid: (Tile | null)[][], direction: Direction): MoveResult {
         const nextRow = newRow + vector.dr;
         const nextCol = newCol + vector.dc;
 
-        // Проверяем границы
         if (nextRow < 0 || nextRow >= GRID_SIZE || nextCol < 0 || nextCol >= GRID_SIZE) break;
 
         const nextCell = newGrid[nextRow][nextCol];
 
         if (!nextCell) {
-          // Пустая клетка — продолжаем движение
           newRow = nextRow;
           newCol = nextCol;
         } else if (
@@ -128,23 +150,20 @@ function move(grid: (Tile | null)[][], direction: Direction): MoveResult {
           !mergedPositions.has(`${nextRow},${nextCol}`) &&
           !mergedPositions.has(`${newRow},${newCol}`)
         ) {
-          // Одинаковые значения и ни одна из плиток не сливалась — слияние
           newRow = nextRow;
           newCol = nextCol;
           break;
         } else {
-          // Другая плитка — останавливаемся
           break;
         }
       }
 
-      // Если позиция изменилась — двигаем
       if (newRow !== r || newCol !== c) {
         moved = true;
         const targetCell = newGrid[newRow][newCol];
 
         if (targetCell && targetCell.value === tile.value) {
-          // Слияние
+          // Слияние — получаем следующий космический объект
           const newValue = tile.value * 2;
           const mergedTile: Tile = {
             id: getNextId(),
@@ -158,7 +177,6 @@ function move(grid: (Tile | null)[][], direction: Direction): MoveResult {
           mergedPositions.add(`${newRow},${newCol}`);
           scoreGained += newValue;
         } else {
-          // Просто перемещение
           newGrid[r][c] = null;
           tile.row = newRow;
           tile.col = newCol;
@@ -171,18 +189,13 @@ function move(grid: (Tile | null)[][], direction: Direction): MoveResult {
   return { grid: newGrid, moved, score: scoreGained };
 }
 
-// Проверка: есть ли возможные ходы
 function isMovePossible(grid: (Tile | null)[][]): boolean {
-  // Есть свободные клетки
   if (getAvailableCells(grid).length > 0) return true;
 
-  // Проверяем возможность слияния
   for (let r = 0; r < GRID_SIZE; r++) {
     for (let c = 0; c < GRID_SIZE; c++) {
       const tile = grid[r][c];
       if (!tile) continue;
-
-      // Проверяем правого и нижнего соседа
       if (c + 1 < GRID_SIZE && grid[r][c + 1]?.value === tile.value) return true;
       if (r + 1 < GRID_SIZE && grid[r + 1][c]?.value === tile.value) return true;
     }
@@ -191,7 +204,6 @@ function isMovePossible(grid: (Tile | null)[][]): boolean {
   return false;
 }
 
-// Проверка: достигнута ли цель (2048)
 function hasWon(grid: (Tile | null)[][]): boolean {
   for (let r = 0; r < GRID_SIZE; r++) {
     for (let c = 0; c < GRID_SIZE; c++) {
@@ -203,7 +215,6 @@ function hasWon(grid: (Tile | null)[][]): boolean {
 
 // ==================== КОМПОНЕНТ ====================
 export default function App() {
-  // Хранилище для начального состояния (используется для инициализации tiles)
   const initialGameRef = useRef<GameState | null>(null);
   if (!initialGameRef.current) {
     initialGameRef.current = initGame();
@@ -225,13 +236,12 @@ export default function App() {
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const gameContainerRef = useRef<HTMLDivElement>(null);
 
-  // Инициализация игры
   function initGame(): GameState {
     const grid = createEmptyGrid();
     spawnTile(grid);
     spawnTile(grid);
 
-    const bestScore = parseInt(localStorage.getItem('best2048') || '0', 10);
+    const bestScore = parseInt(localStorage.getItem('best2048cosmic') || '0', 10);
 
     return {
       grid,
@@ -247,7 +257,7 @@ export default function App() {
   useEffect(() => {
     const allTiles: Tile[] = [];
     let hasAnimatedTiles = false;
-    
+
     for (let r = 0; r < GRID_SIZE; r++) {
       for (let c = 0; c < GRID_SIZE; c++) {
         const tile = gameState.grid[r][c];
@@ -259,8 +269,6 @@ export default function App() {
     }
     setTiles(allTiles);
 
-    // Сбрасываем флаги isNew и mergedFrom после анимации
-    // Только если есть плитки с этими флагами (предотвращаем бесконечный цикл)
     if (hasAnimatedTiles) {
       const timer = setTimeout(() => {
         setGameState(prev => {
@@ -299,18 +307,15 @@ export default function App() {
       return;
     }
 
-    // Спавн новой плитки
     spawnTile(result.grid);
 
     const newScore = gameState.score + result.score;
     const newBest = Math.max(newScore, gameState.bestScore);
 
-    // Сохраняем лучший счёт
     if (newBest > gameState.bestScore) {
-      localStorage.setItem('best2048', String(newBest));
+      localStorage.setItem('best2048cosmic', String(newBest));
     }
 
-    // Проверяем состояния
     let won = gameState.won;
     let gameOver = false;
 
@@ -338,14 +343,8 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const keyMap: Record<string, Direction> = {
-        ArrowUp: 0,
-        ArrowRight: 1,
-        ArrowDown: 2,
-        ArrowLeft: 3,
-        w: 0, W: 0,
-        d: 1, D: 1,
-        s: 2, S: 2,
-        a: 3, A: 3,
+        ArrowUp: 0, ArrowRight: 1, ArrowDown: 2, ArrowLeft: 3,
+        w: 0, W: 0, d: 1, D: 1, s: 2, S: 2, a: 3, A: 3,
       };
 
       const direction = keyMap[e.key];
@@ -379,9 +378,9 @@ export default function App() {
 
     let direction: Direction;
     if (absDx > absDy) {
-      direction = dx > 0 ? 1 : 3; // right : left
+      direction = dx > 0 ? 1 : 3;
     } else {
-      direction = dy > 0 ? 2 : 0; // down : up
+      direction = dy > 0 ? 2 : 0;
     }
 
     handleMove(direction);
@@ -401,29 +400,43 @@ export default function App() {
     return () => container.removeEventListener('touchmove', preventScroll);
   }, []);
 
-  // Новая игра
   const handleNewGame = useCallback(() => {
     tileIdCounter = 0;
     setGameState(initGame());
   }, []);
 
-  // Продолжить игру (после победы)
   const handleKeepPlaying = useCallback(() => {
     setGameState(prev => ({ ...prev, won: false, keepPlaying: true }));
   }, []);
 
-  // Получить CSS-класс для плитки
-  const getTileClass = (value: number): string => {
-    return `tile-${value}`;
-  };
-
-  // Получить CSS-переменные для позиционирования плитки
-  // Позиция вычисляется через CSS: left = var(--col) * (100% + var(--gap)) / 4
+  // Позиционирование плитки через CSS-переменные
   const getTilePosition = (row: number, col: number): React.CSSProperties => {
     return {
       '--col': `${col}`,
       '--row': `${row}`,
     } as React.CSSProperties;
+  };
+
+  // Получить стиль плитки на основе космического объекта
+  const getTileStyle = (value: number): React.CSSProperties => {
+    const obj = getCosmicObject(value);
+    const style: React.CSSProperties = {
+      backgroundColor: obj.color,
+      color: obj.textColor,
+    };
+    if (obj.glow) {
+      style.boxShadow = `0 0 20px 5px ${obj.glow}`;
+    }
+    return style;
+  };
+
+  // Найти следующий объект для подсказки
+  const getNextEvolution = (value: number): CosmicObject | null => {
+    const idx = COSMIC_OBJECTS.findIndex(obj => obj.value === value);
+    if (idx >= 0 && idx < COSMIC_OBJECTS.length - 1) {
+      return COSMIC_OBJECTS[idx + 1];
+    }
+    return null;
   };
 
   return (
@@ -432,7 +445,8 @@ export default function App() {
         {/* Заголовок */}
         <div className="game-header">
           <div className="game-title">
-            <h1>2048</h1>
+            <h1>🌌 2048</h1>
+            <p className="subtitle">Космическая эволюция</p>
           </div>
           <div className="game-scores">
             <div className="score-box">
@@ -440,7 +454,7 @@ export default function App() {
               <span className="score-value">{gameState.score}</span>
             </div>
             <div className="score-box">
-              <span className="score-label">Лучший</span>
+              <span className="score-label">Рекорд</span>
               <span className="score-value">{gameState.bestScore}</span>
             </div>
           </div>
@@ -449,12 +463,27 @@ export default function App() {
         {/* Кнопка и описание */}
         <div className="game-controls">
           <button className="new-game-btn" onClick={handleNewGame}>
-            Новая игра
+            🚀 Новая игра
           </button>
           <p className="game-instructions">
-            Используйте <strong>стрелки</strong> или <strong>свайпы</strong> для перемещения плиток.
-            Соединяйте одинаковые числа, чтобы получить <strong>2048</strong>!
+            Соединяй космические объекты: <strong>☄️ → 🌙 → 🌍 → 🪐 → ☀️</strong>
           </p>
+        </div>
+
+        {/* Эволюционная шкала */}
+        <div className="evolution-bar">
+          {COSMIC_OBJECTS.map((obj, idx) => {
+            const isHighestOnBoard = tiles.some(t => t.value === obj.value);
+            return (
+              <div
+                key={obj.value}
+                className={`evo-item ${isHighestOnBoard ? 'evo-active' : ''}`}
+                title={obj.name}
+              >
+                <span className="evo-emoji">{obj.emoji}</span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Игровое поле */}
@@ -473,29 +502,36 @@ export default function App() {
 
           {/* Плитки */}
           <div className="tiles-container">
-            {tiles.map(tile => (
-              <div
-                key={tile.id}
-                className={`tile ${getTileClass(tile.value)} ${tile.isNew ? 'tile-new' : ''} ${tile.mergedFrom ? 'tile-merged' : ''}`}
-                style={getTilePosition(tile.row, tile.col)}
-              >
-                <span className="tile-value">{tile.value}</span>
-              </div>
-            ))}
+            {tiles.map(tile => {
+              const cosmicObj = getCosmicObject(tile.value);
+              const nextObj = getNextEvolution(tile.value);
+
+              return (
+                <div
+                  key={tile.id}
+                  className={`tile ${tile.isNew ? 'tile-new' : ''} ${tile.mergedFrom ? 'tile-merged' : ''}`}
+                  style={{ ...getTilePosition(tile.row, tile.col), ...getTileStyle(tile.value) }}
+                  title={`${cosmicObj.name}${nextObj ? ` → ${nextObj.emoji} ${nextObj.name}` : ''}`}
+                >
+                  <span className="tile-emoji">{cosmicObj.emoji}</span>
+                  <span className="tile-name">{cosmicObj.name}</span>
+                </div>
+              );
+            })}
           </div>
 
           {/* Оверлей победы */}
           {gameState.won && !gameState.keepPlaying && (
             <div className="game-overlay overlay-win">
               <div className="overlay-content">
-                <h2>Вы победили! 🎉</h2>
-                <p>Вы достигли 2048!</p>
+                <h2>☀️ Вы создали Солнце!</h2>
+                <p>Невероятно! Вы достигли вершины эволюции!</p>
                 <div className="overlay-buttons">
                   <button className="overlay-btn btn-continue" onClick={handleKeepPlaying}>
-                    Продолжить
+                    Продолжить эволюцию
                   </button>
                   <button className="overlay-btn btn-new" onClick={handleNewGame}>
-                    Новая игра
+                    🚀 Новая игра
                   </button>
                 </div>
               </div>
@@ -506,11 +542,11 @@ export default function App() {
           {gameState.gameOver && (
             <div className="game-overlay overlay-lose">
               <div className="overlay-content">
-                <h2>Игра окончена</h2>
-                <p>Ваш счёт: {gameState.score}</p>
+                <h2>🌑 Конец вселенной</h2>
+                <p>Больше нет возможных ходов. Счёт: {gameState.score}</p>
                 <div className="overlay-buttons">
                   <button className="overlay-btn btn-new" onClick={handleNewGame}>
-                    Новая игра
+                    🚀 Новая вселенная
                   </button>
                 </div>
               </div>
@@ -520,7 +556,7 @@ export default function App() {
 
         {/* Футер */}
         <div className="game-footer">
-          <p>Сделано с ❤️ | Классическая игра 2048</p>
+          <p>🌌 Космическая 2048 | Стрелки / WASD / Свайпы</p>
         </div>
       </div>
     </div>
